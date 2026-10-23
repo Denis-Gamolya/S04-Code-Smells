@@ -77,7 +77,7 @@ update(time, delta) {
 }
 ```
 
-## Java Example
+## C# Example
 
 ```
 public void ProcessOrder(Order order)
