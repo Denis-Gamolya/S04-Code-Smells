@@ -19,6 +19,7 @@ When a block of code needs to be preceded with a comment for understanding, that
 
 ## Javascript Example
 
+```
 update(time, delta) {
 .
 .
@@ -73,8 +74,43 @@ update(time, delta) {
 .
 .
 .
-
 }
+```
 
-## 
+## Java Example
+
+```
+public void ProcessOrder(Order order)
+{
+    // Validate
+    if (order == null) throw new ArgumentNullException(nameof(order));
+    if (!order.Items.Any()) throw new InvalidOperationException("Order has no items.");
+    if (order.CustomerId <= 0) throw new InvalidOperationException("Invalid customer ID.");
+
+    // Calculate total
+    decimal subtotal = 0;
+    foreach (var item in order.Items)
+    {
+        subtotal += item.Quantity * item.UnitPrice;
+    }
+    decimal tax = subtotal * 0.08m;
+    decimal total = subtotal + tax;
+    order.Total = total;
+
+    // Apply discount
+    if (order.CustomerIsVip)
+    {
+        order.Total *= 0.90m;
+    }
+
+    // Save to database
+    _dbContext.Orders.Add(order);
+    _dbContext.SaveChanges();
+
+    // Send confirmation email
+    var subject = $"Order #{order.Id} Confirmation";
+    var body = $"Thank you for your order. Total: {order.Total:C}";
+    _emailService.Send(order.CustomerEmail, subject, body);
+}
+```
 
