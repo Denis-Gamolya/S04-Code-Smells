@@ -3,6 +3,77 @@
 
 # Long Parameter List
 
+## What is a Long Parameter List?
+
+A long parameter list is when a function requires so many inputs that its call becomes difficult to understand. The reader is responsible for knowing what each argument means and their order.
+
+## How does it Arise?
+
+As more features get added to a function, more parameters get added. Flags for selecting different behaviors also grow the parameter list.
+
+## How to Avoid and Fix?
+
+Keep related data together and review the function's inputs before adding parameters. 
+
+Fowler describes these refactorings for Long Parameter Lists:
+
+- **Introduce Parameter Object:** Create an object for values that are naturally together, such as a position.
+- **Preserve Whole Object:** When several arguments come from an existing object, pass the object instead of extracting its fields at the call site.
+- **Replace Parameter with Query:** If the function can get a value from another parameter, have it request that value instead of receiving both.
+- **Remove Flag Argument:** Replace a parameter that selects different behaviors with clearly named functions for those behaviors.
+
+### Before: JavaScript Example
+
+```javascript
+function createEnemy(name, x, y, health, damage, speed) {
+    return { name, x, y, health, damage, speed };
+}
+
+const enemy = createEnemy("Goblin", 100, 200, 50, 10, 3);
+```
+
+### After: Introduce Parameter Object
+
+```javascript
+function createEnemy(name, position, stats) {
+    return {
+        name,
+        x: position.x,
+        y: position.y,
+        health: stats.health,
+        damage: stats.damage,
+        speed: stats.speed
+    };
+}
+
+const position = { x: 100, y: 200 };
+const stats = { health: 50, damage: 10, speed: 3 };
+const enemy = createEnemy("Goblin", position, stats);
+```
+
+The function now receives three parameters and named properties make the inputs easier to read.
+
+### Before: Python Example
+
+```python
+def shipping_label(name, street, city, state, postal_code):
+    return f"{name}\n{street}\n{city}, {state} {postal_code}"
+
+address = {"street": "123 Main St", "city": "Santa Cruz", "state": "CA", "postal_code": "95060"}
+label = shipping_label("Alex", address["street"], address["city"], address["state"], address["postal_code"])
+```
+
+### After: Preserve Whole Object
+
+```python
+def shipping_label(name, address):
+    return f"{name}\n{address['street']}\n{address['city']}, {address['state']} {address['postal_code']}"
+
+label = shipping_label("Alex", address)
+```
+
+Passing the existing address dictionary reduces five parameters to two.
+
 # Long Functions
 
 ## What are Long Functions?
