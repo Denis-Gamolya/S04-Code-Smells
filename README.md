@@ -75,7 +75,6 @@ label = shipping_label("Alex", address)
 Passing the existing address dictionary reduces five parameters to two.
 
 # Long Functions
-
 ## What are Long Functions?
 
 Lengthy methods that contain many lines and blocks of code. While they might all serve one end result, the abundance of code can confuse readers and make it harder to understand what each line achieves.
@@ -88,14 +87,16 @@ Some programmers might find it easier to continue adding onto a function than to
 
 When a block of code needs to be preceded with a comment for understanding, that block can most likely be rewritten into a new function (Extract Function). 
 
-## Javascript Example
+## Examples
+### Javascript
 
-```
+```javascript
+
 update(time, delta) {
 .
 .
 .
-
+    let dt = delta/1000
     //move up
     if(this.up.isDown){
         //move player sprite up
@@ -148,9 +149,70 @@ update(time, delta) {
 }
 ```
 
-## C# Example
+### After Extract Function
+```javascript
+handleMovement(dt){
+    //move up
+    if(this.up.isDown){
+        //move player sprite up
+        if(my.sprite.player.y > this.upperBound){
+            this.my.sprite.player.y -= this.speed * dt;
+        }
+    }
 
+    //move down
+    if(this.down.isDown){
+        //move player sprite down
+        if(my.sprite.player.y < this.lowerBound){
+                this.my.sprite.player.y += this.speed * dt;
+        }
+    }
+}
+
+shootSpike(){
+    if(Phaser.Input.Keyboard.JustDown(this.spaceKey)){
+    //fire spike
+    // Get the first inactive spike, and make it active
+    let spike = my.sprite.spikeGroup.getFirstDead();
+    // spike will be null if there are no inactive (available) bullets
+    if (spike != null) {
+        spike.active = true;
+        spike.visible = true;
+        spike.x = my.sprite.player.x;
+        spike.y = my.sprite.player.y;
+        this.spikeThrowSound.play();
+    }
+    }
+}
+
+makeOffscreenInactive(group){
+    for (let member of group) {
+        if (member.x > game.config.width + member.displayWidth/2) {
+            member.active = false;
+            member.visible = false;
+        }
+    }
+}
+
+update(time, delta) {
+.
+.
+.
+    let dt = delta/1000;
+
+    handleMovement(dt);
+    shootSpike();
+    makeOffscreenInactive(my.sprite.spikeGroup.getChildren());
+    makeOffscreenInactive(my.sprite.bubbleGroup.getChildren());
+.
+.
+.
+}
 ```
+
+### C#
+
+```c#
 public void ProcessOrder(Order order)
 {
     // Validate
@@ -184,4 +246,50 @@ public void ProcessOrder(Order order)
     _emailService.Send(order.CustomerEmail, subject, body);
 }
 ```
+### After Extract Function
+```c#
+public void validateOrder(Order order){
+    if (order == null) throw new ArgumentNullException(nameof(order));
+    if (!order.Items.Any()) throw new InvalidOperationException("Order has no items.");
+    if (order.CustomerId <= 0) throw new InvalidOperationException("Invalid customer ID.");
+}
 
+public void calculateTotal(Order order){
+    decimal subtotal = 0;
+    foreach (var item in order.Items)
+    {
+        subtotal += item.Quantity * item.UnitPrice;
+    }
+    decimal tax = subtotal * 0.08m;
+    decimal total = subtotal + tax;
+    order.Total = total;
+}
+
+public void applyDiscount(Order order){
+    if (order.CustomerIsVip)
+    {
+        order.Total *= 0.90m;
+    }
+}
+
+public void saveToDatabase(Order order){
+    _dbContext.Orders.Add(order);
+    _dbContext.SaveChanges();s
+}
+
+public void sendConfirmation(Order order){
+    // Send confirmation email
+    var subject = $"Order #{order.Id} Confirmation";
+    var body = $"Thank you for your order. Total: {order.Total:C}";
+    _emailService.Send(order.CustomerEmail, subject, body);
+}
+
+public void processOrder(Order order)
+{
+    validateOrder(order);
+    calculateTotal(order);
+    applyDiscount(order);
+    saveToDatabase(order);
+    sendCorfirmation(order);
+}
+```
