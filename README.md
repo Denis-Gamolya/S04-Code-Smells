@@ -1,5 +1,5 @@
 # S04-Code-Smells
-# Denis Gamolya, Yahir Prenger
+### Denis Gamolya, Yahir Prenger
 
 # Long Parameter List
 
@@ -15,14 +15,14 @@ As more features get added to a function, more parameters get added. Flags for s
 
 Keep related data together and review the function's inputs before adding parameters. 
 
-Fowler describes these refactorings for Long Parameter Lists:
+Fowler mentions these refactorings for Long Parameter Lists:
 
 - **Introduce Parameter Object:** Create an object for values that are naturally together, such as a position.
 - **Preserve Whole Object:** When several arguments come from an existing object, pass the object instead of extracting its fields at the call site.
 - **Replace Parameter with Query:** If the function can get a value from another parameter, have it request that value instead of receiving both.
 - **Remove Flag Argument:** Replace a parameter that selects different behaviors with clearly named functions for those behaviors.
 
-### Before: JavaScript Example
+### JavaScript Example
 
 ```javascript
 function createEnemy(name, x, y, health, damage, speed) {
@@ -53,7 +53,7 @@ const enemy = createEnemy("Goblin", position, stats);
 
 The function now receives three parameters and named properties make the inputs easier to read.
 
-### Before: Python Example
+### Python Example
 
 ```python
 def shipping_label(name, street, city, state, postal_code):
