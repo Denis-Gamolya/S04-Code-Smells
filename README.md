@@ -1,8 +1,8 @@
 # S04-Code-Smells
 ### Denis Gamolya, Yahir Prenger
 
-# Long Parameter List
 
+# Long Parameter List
 ## What is a Long Parameter List?
 
 A long parameter list is when a function requires so many inputs that its call becomes difficult to understand. The reader is responsible for knowing what each argument means and their order.
